@@ -11,10 +11,11 @@ from PyQt5.QtCore import Qt, pyqtSignal, QObject
 baseUIClass, baseUIWidget = uic.loadUiType("main.ui")
 
 class timerThread(Thread):
-    def __init__(self, readDelegate):
+    def __init__(self, readDelegate, valUp):
         Thread.__init__(self)
         self.daemon = True
         self.timerValue = readDelegate
+        self.valUpd = valUp
         self.start()
         print("RUNNING")
         
@@ -25,6 +26,13 @@ class timerThread(Thread):
             if self.timerStatus:
                 self.i = self.i + 1;
             self.timerValue(str(self.i))
+
+            if self.i < 50:
+                self.valUpd("Below 50")
+            
+            else:
+                self.valUpd("Above 50")
+
             sleep(0.1)
 
     def stopTimer(self):
@@ -38,6 +46,7 @@ class timerThread(Thread):
 
 class AppSignals(QObject):
     timerUpdateSignal = pyqtSignal(str)
+    val_update = pyqtSignal(str)
 
 # use loaded ui file in the logic class
 class mainWindow(baseUIWidget, baseUIClass):
@@ -51,10 +60,12 @@ class mainWindow(baseUIWidget, baseUIClass):
         #Signals
         #Call Signals
         self.app_signals = AppSignals()
-        #Connect Signals to functions
+        #Start a Thread; Pass on functions that contain pyqtsignal to return value
+        self.timerLoop = timerThread(self.timerUpdateDelegate, self.valUpdate)
 
-        self.timerLoop = timerThread(self.timerUpdateDelegate)
+        #connect app signals to functions
         self.app_signals.timerUpdateSignal.connect(self.timerUpdate)
+        self.app_signals.val_update.connect(self.updateText)
 
         #Connect buttons by its names
         self.start_but.clicked.connect(lambda:self.startCount())
@@ -70,8 +81,18 @@ class mainWindow(baseUIWidget, baseUIClass):
         self.status.setText("STOPPED")
         self.timerLoop.stopTimer()
 
+    #Signal Definitions
+
     def timerUpdateDelegate(self, time_update):
         self.app_signals.timerUpdateSignal.emit(time_update)
+
+    def valUpdate(self, val_update):
+        self.app_signals.val_update.emit(val_update)
+
+    #UI Updates
+
+    def updateText(self, text):
+        self.text_val.setText(text)
     
     def timerUpdate(self, time_update):
         self.count.setText(time_update)

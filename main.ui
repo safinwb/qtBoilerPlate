@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>780</width>
-    <height>557</height>
+    <height>602</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -180,8 +180,8 @@ background-color: rgb(30, 30, 30)
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>450</y>
+      <x>110</x>
+      <y>480</y>
       <width>61</width>
       <height>31</height>
      </rect>
@@ -202,8 +202,8 @@ background-color: rgb(30, 30, 30)
    <widget class="QProgressBar" name="batteryBar">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>450</y>
+      <x>210</x>
+      <y>480</y>
       <width>421</width>
       <height>31</height>
      </rect>
@@ -243,6 +243,36 @@ QProgressBar::chunk {
     </property>
     <property name="textDirection">
      <enum>QProgressBar::TopToBottom</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="text_val">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>380</y>
+      <width>141</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Ubuntu</family>
+      <pointsize>20</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(186, 186, 186);</string>
+    </property>
+    <property name="text">
+     <string>Null</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="wordWrap">
+     <bool>false</bool>
     </property>
    </widget>
   </widget>
