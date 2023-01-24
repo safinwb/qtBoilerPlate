@@ -11,12 +11,13 @@ from PyQt5.QtCore import Qt, pyqtSignal, QObject
 baseUIClass, baseUIWidget = uic.loadUiType("main.ui")
 
 class timerThread(Thread):
-    def __init__(self, readDelegate, valUp):
+    def __init__(self, readDelegate, valUp, func):
         Thread.__init__(self)
         self.daemon = True
         self.timerValue = readDelegate
         self.valUpd = valUp
         self.start()
+        self.callBoo = func
         print("RUNNING")
         
     def run(self):
@@ -32,6 +33,7 @@ class timerThread(Thread):
             
             else:
                 self.valUpd("Above 50")
+                self.callBoo("CALLBACK TEST")
 
             sleep(0.1)
 
@@ -61,7 +63,7 @@ class mainWindow(baseUIWidget, baseUIClass):
         #Call Signals
         self.app_signals = AppSignals()
         #Start a Thread; Pass on functions that contain pyqtsignal to return value
-        self.timerLoop = timerThread(self.timerUpdateDelegate, self.valUpdate)
+        self.timerLoop = timerThread(self.timerUpdateDelegate, self.valUpdate, self.updateCB)
 
         #connect app signals to functions
         self.app_signals.timerUpdateSignal.connect(self.timerUpdate)
@@ -98,10 +100,12 @@ class mainWindow(baseUIWidget, baseUIClass):
         self.count.setText(time_update)
         self.batteryBar.setValue(int(time_update))
 
+    def updateCB(self, text):
+        self.testboo.setText(text)
+
 
 if __name__=="__main__":
     app = QtWidgets.QApplication(sys.argv)
     ui = mainWindow(None)
-    #timerLoop = timerThread(ui.timerUpdateDelegate) THIS IS ONE WAY TO START THE THEAD THO
     ui.show()
     sys.exit(app.exec_())
